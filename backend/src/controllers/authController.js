@@ -100,3 +100,17 @@ export const logoutUser = (req, res) => {
   });
   res.status(200).json({ message: "Logged out successfully" });
 };
+export const verifyUser = async (req, res) => {
+  try {
+    // req.user.id is available because of the 'auth' middleware
+    const user = await User.findById(req.user.id).select("-password");
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(500).json({ message: "Verification failed" });
+  }
+};
