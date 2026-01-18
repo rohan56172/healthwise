@@ -3,12 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-<<<<<<< HEAD
+
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js"
-=======
-    "test": "echo \"Error: no test specified\" && exit 1"
->>>>>>> 92e37949d94ccea867e64c4a23f3ac0ce72e48e3
+
+
   },
   "keywords": [],
   "author": "",
