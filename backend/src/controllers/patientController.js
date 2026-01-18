@@ -7,7 +7,7 @@ import User from "../models/User.js";
 export const getPatientDashboard = async (req, res) => {
   try {
     // req.user.id comes from the 'auth' middleware
-    const goals = await Goal.find({ userId: req.user.id }).sort({ date: -1 });
+    const goals = await Goal.findOne({ userId: req.user.id }).sort({ date: -1 });
     res.status(200).json(goals);
   } catch (err) {
     res.status(500).json({ message: "Error fetching dashboard data: " + err.message });
@@ -17,17 +17,21 @@ export const getPatientDashboard = async (req, res) => {
 // @desc    Create a new daily goal/wellness log
 // @route   POST /api/patient/goal
 // @access  Private (Patient only)
-export const createPatientGoal = async (req, res) => {
+export const updatePatientGoal = async (req, res) => {
   try {
-    const goal = await Goal.create({
-      userId: req.user.id,
-      ...req.body // spreads date, metrics (steps, sleep), etc.
-    });
-    res.status(201).json(goal);
+    const goal = await Goal.findOneAndUpdate(
+      { userId: req.user.id },
+      { $set: req.body },
+      { new: true, upsert: true }
+    );
+
+    res.status(200).json(goal);
   } catch (err) {
-    res.status(500).json({ message: "Error creating goal: " + err.message });
+    res.status(500).json({ message: "Error updating goal: " + err.message });
   }
 };
+
+
 
 // @desc    Get patient profile details
 // @route   GET /api/patient/profile
@@ -52,3 +56,44 @@ export const getPatientProfile = async (req, res) => {
     res.status(500).json({ message: "Error fetching profile: " + err.message });
   }
 };
+
+
+
+export const profileUpdate = async (req, res) => {
+  try {
+    if (req.body.role) {
+      return res.status(403).json({ message: "Role cannot be updated" });
+    }
+
+    const user = await User.findById(req.user.id).select("+password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (req.body.name) {
+      user.name = req.body.name.trim();
+    }
+
+    if (req.body.password) {
+      user.password = await bcrypt.hash(req.body.password, 10);
+    }
+
+    user.profile.allergies = req.body.allergies;
+    user.profile.medications = req.body.medications;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        name: user.name,
+        role: user.role,
+        profile: user.profile
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error updating profile: " + err.message });
+  }
+};
+
+
