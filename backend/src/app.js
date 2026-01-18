@@ -4,9 +4,6 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-
-
-
 import authRoutes from "./routes/auth.js";
 import patientRoutes from "./routes/patient.js";
 import providerRoutes from "./routes/provider.js";
@@ -16,14 +13,17 @@ const app = express();
 const PORT=process.env.PORT||5000;
 
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173", 
+  credentials: true                
+}));
 app.use(express.json());
-
+//routes
 app.use("/api/auth", authRoutes);
 app.use("/api/patient", patientRoutes);
 app.use("/api/provider", providerRoutes);
 
- 
+ //dbConnect
 const dbConnect=async()=>{
     try {
         await mongoose.connect(process.env.CONNECTION_STRING)
