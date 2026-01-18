@@ -26,19 +26,38 @@ A secure, scalable Healthcare Wellness and Preventive Care Portal designed to br
 
 ```text
 root/
-├── frontend/               # Next.js Frontend Application
+├── frontend/                  # React Application (Vite)
 │   ├── src/
-│   │   ├── app/            # App Router (Pages & Layouts)
-│   │   ├── components/     # UI Components (Dashboard, Tables)
-│   │   └── lib/            # API services & Utilities
-│   └── public/             # Static assets
-├── backend/                # Node.js/Express Backend API
+│   │   ├── api/               # Axios configuration & Global Error Interceptors
+│   │   ├── components/        # Reusable UI (Sidebar, Layouts, Cards)
+│   │   ├── context/           # AuthContext (Login/Logout logic)
+│   │   ├── pages/             # App Screens
+│   │   │   ├── Dashboard.jsx        # Main Patient View
+│   │   │   ├── ProviderDashboard.jsx # Main Provider View
+│   │   │   ├── PatientDetails.jsx   # Provider's Patient View
+│   │   │   ├── WellnessGoals.jsx    # Data Entry Form
+│   │   │   ├── Login.jsx / Register.jsx
+│   │   │   ├── AccessDenied.jsx     # Security Guard Page
+│   │   │   └── ServerError.jsx      # Global Error Page
+│   │   ├── App.jsx            # Routing & ProtectedRoute Guards
+│   │   └── main.jsx           # Entry Point
+│   └── package.json           # Frontend Dependencies
+│
+├── backend/                   # Node.js API Server
 │   ├── src/
-│   │   ├── config/         # DB Connection
-│   │   ├── controllers/    # Request logic
-│   │   ├── models/         # MongoDB Schemas
-│   │   ├── routes/         # API Endpoints
-│   │   └── middleware/     # Auth & Logging logic
-│   └── index.js            # Server entry point
-├── README.md               # Project Documentation
-└── .gitignore              # Ignored files
+│   │   ├── config/            # DB Connection (dbConnect.js)
+│   │   ├── controllers/       # Business Logic (auth, patient, provider)
+│   │   ├── middleware/        # auth.js (Verify Token & Check Role)
+│   │   ├── models/            # Mongoose Models (User.js, Goal.js)
+│   │   ├── routes/            # API Routes (auth.js, patient.js, provider.js)
+│   │   └── app.js             # Express App Configuration & CORS
+│   ├── .env                   # Environment Variables (Secrets)
+│   └── package.json           # Backend Dependencies
+
+🤝 Contributors
+[Parasa Sai Rohan]
+
+[Vaibhav] 
+
+[Vamshi] 
+
