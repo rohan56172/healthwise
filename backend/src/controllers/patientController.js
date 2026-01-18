@@ -34,14 +34,20 @@ export const createPatientGoal = async (req, res) => {
 // @access  Private (Patient only)
 export const getPatientProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password"); // Exclude password
-    
+    // Fetch user by ID and exclude password
+    const user = await User.findById(req.user.id).select("-password");
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Return just the profile object (age, medical history etc) or the whole user
-    res.status(200).json(user.profile || {}); 
+    // Return profile along with basic info
+    res.status(200).json({
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      profile: user.profile
+    });
   } catch (err) {
     res.status(500).json({ message: "Error fetching profile: " + err.message });
   }

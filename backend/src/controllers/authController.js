@@ -51,31 +51,27 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check for user
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Check password
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate Token
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    // Send HTTP-only cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Set to true in prod
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 60 * 60 * 1000 // 1 hour
+      maxAge: 60 * 60 * 1000
     });
 
     res.json({
@@ -91,6 +87,7 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: "Login failed: " + err.message });
   }
 };
+
 
 // @desc    Logout user / clear cookie
 // @route   POST /api/auth/logout
